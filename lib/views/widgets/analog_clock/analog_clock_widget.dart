@@ -14,6 +14,8 @@ class Clock extends StatefulWidget {
 
 class _ClockState extends State<Clock> with TickerProviderStateMixin {
   late final AnimationController _controller;
+  late AnimationController _ctrlSeconds;
+  late AnimationController _ctrlMinutesHours;
   late final Animation<double> _animation;
 
   DateTime _now = DateTime.now();
@@ -24,10 +26,6 @@ class _ClockState extends State<Clock> with TickerProviderStateMixin {
     super.initState();
 
     _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 60000));
-    /*_animation = Tween<double>(
-      begin: 0.0,
-      end: 360.0,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.linear));*/
     _animation = CurvedAnimation(parent: _controller, curve: Curves.linear);
     _controller.repeat();
   }
@@ -80,30 +78,85 @@ class _ClockState extends State<Clock> with TickerProviderStateMixin {
             // needles
             Consumer<ClockModel>(
               builder: (_, clock, __) {
-                AnimationController _ctrl =
-                    AnimationController(vsync: this, duration: const Duration(milliseconds: 200));
+                _ctrlSeconds = AnimationController(vsync: this, duration: const Duration(milliseconds: 200));
+                _ctrlMinutesHours = AnimationController(vsync: this, duration: const Duration(milliseconds: 200));
                 void _tick() {
-                  _ctrl.forward();
+                  _ctrlSeconds.forward();
                 }
 
                 _tick();
-                print(clock.seconds);
 
-                return RotationTransition(
-                  turns: Tween<double>(
-                    begin: 360 / 60 * (clock.seconds - 1) / 360,
-                    end: 360 / 60 * clock.seconds / 360,
-                  ).animate(CurvedAnimation(parent: _ctrl, curve: Curves.elasticOut)),
-                  child: Center(
-                    child: Align(
-                      alignment: Alignment.topCenter,
-                      child: Container(
-                        width: 0,
-                        height: screenWidth(context) * 3 / 8,
-                        decoration: BoxDecoration(border: Border.all(width: 0.5, color: Colors.blue)),
+                return Stack(
+                  children: [
+                    // seconds
+                    RotationTransition(
+                      turns: Tween<double>(
+                        begin: 360 / 60 * (clock.seconds - 1) / 360,
+                        end: 360 / 60 * clock.seconds / 360,
+                      ).animate(CurvedAnimation(parent: _ctrlSeconds, curve: Curves.elasticOut)),
+                      child: Center(
+                        child: Align(
+                          alignment: Alignment.topCenter,
+                          child: Column(
+                            children: [
+                              Padding(padding: EdgeInsets.only(top: screenWidth(context) * 1 / 16)),
+                              Container(
+                                width: 0,
+                                height: screenWidth(context) * 5 / 16,
+                                decoration: BoxDecoration(border: Border.all(width: 1, color: Colors.blue)),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
-                  ),
+
+                    // minutes
+                    RotationTransition(
+                      turns: Tween<double>(
+                        begin: 360 / 60 * (clock.minutes) / 360,
+                        end: 360 / 60 * (clock.minutes + 1) / 360,
+                      ).animate(CurvedAnimation(parent: _ctrlMinutesHours, curve: Curves.elasticOut)),
+                      child: Center(
+                        child: Align(
+                          alignment: Alignment.topCenter,
+                          child: Column(
+                            children: [
+                              Padding(padding: EdgeInsets.only(top: screenWidth(context) * 2 / 16)),
+                              Container(
+                                width: 0,
+                                height: screenWidth(context) * 4 / 16,
+                                decoration: BoxDecoration(border: Border.all(width: 2, color: Colors.black)),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    // hours
+                    RotationTransition(
+                      turns: Tween<double>(
+                        begin: 360 / 12 * (clock.hours) / 360,
+                        end: 360 / 12 * (clock.hours + 1) / 360,
+                      ).animate(CurvedAnimation(parent: _ctrlMinutesHours, curve: Curves.elasticOut)),
+                      child: Center(
+                        child: Align(
+                          alignment: Alignment.topCenter,
+                          child: Column(
+                            children: [
+                              Padding(padding: EdgeInsets.only(top: screenWidth(context) * 3 / 16)),
+                              Container(
+                                width: 0,
+                                height: screenWidth(context) * 3 / 16,
+                                decoration: BoxDecoration(border: Border.all(width: 3, color: Colors.black)),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 );
               },
             ),

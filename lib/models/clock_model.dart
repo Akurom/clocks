@@ -10,8 +10,8 @@ class ClockModel extends ChangeNotifier {
 
   ClockModel.reset() {
     _seconds = 0;
-    _minutes = 0;
-    _hours = 0;
+    _minutes = 59;
+    _hours = 8;
     _isRunning = false;
   }
 
