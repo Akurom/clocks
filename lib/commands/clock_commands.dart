@@ -9,13 +9,12 @@ class ClockCommands extends BaseCommand {
 
   void _updateTime() {
     _now = DateTime.now();
-    // Update once per second. Make sure to do it at the beginning of each
-    // new second, so that the clock is accurate.
     _timer = Timer(const Duration(seconds: 1) - Duration(milliseconds: _now.millisecond), () {
-
       if (clockModel.isRunning) {
         clockModel.addSecond();
         _updateTime();
+      } else {
+        _timer.cancel();
       }
     });
   }

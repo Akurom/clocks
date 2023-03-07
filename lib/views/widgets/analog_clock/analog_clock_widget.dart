@@ -39,8 +39,6 @@ class _ClockState extends State<Clock> with TickerProviderStateMixin {
     super.dispose();
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -81,16 +79,28 @@ class _ClockState extends State<Clock> with TickerProviderStateMixin {
 
             // needles
             Consumer<ClockModel>(
-              builder: (_, foo, __) {
+              builder: (_, clock, __) {
+                AnimationController _ctrl =
+                    AnimationController(vsync: this, duration: const Duration(milliseconds: 200));
+                void _tick() {
+                  _ctrl.forward();
+                }
+
+                _tick();
+                print(clock.seconds);
+
                 return RotationTransition(
-                  turns: _animation, //AlwaysStoppedAnimation(360 / 12 * 0 / 360),
+                  turns: Tween<double>(
+                    begin: 360 / 60 * (clock.seconds - 1) / 360,
+                    end: 360 / 60 * clock.seconds / 360,
+                  ).animate(CurvedAnimation(parent: _ctrl, curve: Curves.elasticOut)),
                   child: Center(
                     child: Align(
                       alignment: Alignment.topCenter,
                       child: Container(
                         width: 0,
                         height: screenWidth(context) * 3 / 8,
-                        decoration: BoxDecoration(border: Border.all(width: 0.25, color: Colors.blue)),
+                        decoration: BoxDecoration(border: Border.all(width: 0.5, color: Colors.blue)),
                       ),
                     ),
                   ),
