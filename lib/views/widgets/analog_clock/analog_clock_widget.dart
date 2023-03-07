@@ -1,5 +1,9 @@
+import 'dart:async';
+
+import 'package:clocks/models/clock_model.dart';
 import 'package:clocks/utils/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class Clock extends StatefulWidget {
   const Clock({super.key});
@@ -11,6 +15,9 @@ class Clock extends StatefulWidget {
 class _ClockState extends State<Clock> with TickerProviderStateMixin {
   late final AnimationController _controller;
   late final Animation<double> _animation;
+
+  DateTime _now = DateTime.now();
+  late Timer _timer;
 
   @override
   void initState() {
@@ -27,9 +34,12 @@ class _ClockState extends State<Clock> with TickerProviderStateMixin {
 
   @override
   void dispose() {
+    _timer?.cancel();
     _controller.dispose();
     super.dispose();
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -39,34 +49,53 @@ class _ClockState extends State<Clock> with TickerProviderStateMixin {
         height: screenWidth(context) * 3 / 4,
         child: Stack(
           children: [
+            // bg digits current session
+            Center(
+              child: Opacity(
+                opacity: 0.2,
+                child: Consumer<ClockModel>(
+                  builder: (_, clock, __) {
+                    return Text(
+                      formatTimer(clock.hours, clock.minutes),
+                      style: Theme.of(context).textTheme.displayLarge,
+                    );
+                  },
+                ),
+              ),
+            ),
+
             // 5mn marks
             for (int i = 0; i < 12; i++) ...[
               RotationTransition(
                 turns: AlwaysStoppedAnimation(360 / 12 * i / 360),
-                  child: Align(
-                    alignment: Alignment.topCenter,
-                    child: Container(
-                      width: 0,
-                      height: 20,
-                      decoration: BoxDecoration(border: Border.all(width: 2)),
-                    ),
-                  ),
-                ),
-            ],
-
-            // needles
-            RotationTransition(
-              turns: _animation, //AlwaysStoppedAnimation(360 / 12 * 0 / 360),
-              child: Center(
                 child: Align(
                   alignment: Alignment.topCenter,
                   child: Container(
                     width: 0,
-                    height: screenWidth(context) * 3 / 8,
-                    decoration: BoxDecoration(border: Border.all(width: 0.25, color: Colors.blue)),
+                    height: 20,
+                    decoration: BoxDecoration(border: Border.all(width: 2)),
                   ),
                 ),
               ),
+            ],
+
+            // needles
+            Consumer<ClockModel>(
+              builder: (_, foo, __) {
+                return RotationTransition(
+                  turns: _animation, //AlwaysStoppedAnimation(360 / 12 * 0 / 360),
+                  child: Center(
+                    child: Align(
+                      alignment: Alignment.topCenter,
+                      child: Container(
+                        width: 0,
+                        height: screenWidth(context) * 3 / 8,
+                        decoration: BoxDecoration(border: Border.all(width: 0.25, color: Colors.blue)),
+                      ),
+                    ),
+                  ),
+                );
+              },
             ),
           ],
         ),

@@ -1,8 +1,12 @@
+import 'package:clocks/commands/clock_commands.dart';
+import 'package:clocks/models/clock_model.dart';
 import 'package:clocks/utils/utils.dart';
 import 'package:clocks/views/widgets/analog_clock/analog_clock_widget.dart';
 import 'package:clocks/views/widgets/menu.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
+
+import 'package:provider/provider.dart';
 
 class ClockPage extends StatefulWidget {
   const ClockPage({super.key});
@@ -64,55 +68,114 @@ class _ClockPageState extends State<ClockPage> with TickerProviderStateMixin {
                   ),
                 ),
                 // clock
+
                 Transform.translate(
                   offset: Offset(maxSlide * _controller.value, 0),
                   child: Transform(
                     transform: Matrix4.identity()
                       ..setEntry(3, 2, 0.001)
                       ..rotateY(-pi / 2 * _controller.value),
-                    /*..translate(slide)
-                    ..scale(scale),*/
                     alignment: Alignment.centerLeft,
-                    child: Container(
-                      color: Colors.white,
-                      child: Column(
-                        children: [
-
-                          Align(
-                            alignment: Alignment.topLeft,
-                            child: InkWell(
-                              child: Icon(Icons.menu, size: 42,),
-                              onTap: () {
-                                _toggle();
-                              },
+                    child: SingleChildScrollView(
+                      child: Container(
+                        color: Colors.white,
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Align(
+                                  alignment: Alignment.topLeft,
+                                  child: InkWell(
+                                    child: Icon(
+                                      Icons.menu,
+                                      size: 42,
+                                    ),
+                                    onTap: () {
+                                      _toggle();
+                                    },
+                                  ),
+                                ),
+                                Align(
+                                  alignment: Alignment.topLeft,
+                                  child: InkWell(
+                                    child: Icon(
+                                      Icons.nightlight,
+                                      size: 42,
+                                    ),
+                                    onTap: () {},
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
-                          Text("PROJECT TITLE", style: Theme.of(context).textTheme.displaySmall,),
-                          Text("Task name", style: Theme.of(context).textTheme.bodyLarge,),
-                          Padding(padding: EdgeInsets.only(bottom: screenHeight(context) * 1/20)),
-                          const Clock(),
-                          Padding(padding: EdgeInsets.only(bottom: screenHeight(context) * 1/20)),
-                          Icon(Icons.play_arrow_sharp, size: 69,),
-                          Padding(padding: EdgeInsets.only(bottom: screenHeight(context) * 1/20)),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Column(
-                                children: [
-                                  Text("TOTAL", style: Theme.of(context).textTheme.displaySmall,),
-                                  Text("07:45", style: Theme.of(context).textTheme.displayMedium,),
-                                ],
-                              ),
+                            Text(
+                              "PROJECT TITLE",
+                              style: Theme.of(context).textTheme.displaySmall,
+                            ),
+                            Text(
+                              "Task name",
+                              style: Theme.of(context).textTheme.bodyLarge,
+                            ),
+                            Padding(padding: EdgeInsets.only(bottom: screenHeight(context) * 1 / 20)),
+                            // -----
 
-                              Column(
-                                children: [
-                                  Text("TODAY", style: Theme.of(context).textTheme.displaySmall,),
-                                  Text("00:21", style: Theme.of(context).textTheme.displayMedium,),
+                            const Clock(),
+                            Padding(padding: EdgeInsets.only(bottom: screenHeight(context) * 1 / 20)),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                InkWell(
+                                  child: const Icon(
+                                    Icons.play_arrow_sharp,
+                                    size: 69,
+                                  ),
+                                  onTap: () {
+                                    ClockCommands().start();
+                                  },
+                                ),
+                                InkWell(
+                                  child: const Icon(
+                                    Icons.stop_sharp,
+                                    size: 69,
+                                  ),
+                                  onTap: () {
+                                    ClockCommands().stop();
+                                  },
+                                ),
+                              ],
+                            ),
+                            Padding(padding: EdgeInsets.only(bottom: screenHeight(context) * 1 / 20)),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                Column(
+                                  children: [
+                                    Text(
+                                      "TOTAL",
+                                      style: Theme.of(context).textTheme.displaySmall,
+                                    ),
+                                    Text(
+                                      "07:45",
+                                      style: Theme.of(context).textTheme.displayMedium,
+                                    ),
                                   ],
-                              ),
-                            ],
-                          ),
-                        ],
+                                ),
+                                Column(
+                                  children: [
+                                    Text(
+                                      "TODAY",
+                                      style: Theme.of(context).textTheme.displaySmall,
+                                    ),
+                                    Text(
+                                      "00:21",
+                                      style: Theme.of(context).textTheme.displayMedium,
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),

@@ -4,6 +4,11 @@ import 'package:flutter/material.dart';
 Random random = new Random();
 
 
+String formatTimer(int h, int m) {
+  return "${(h < 10 ? '0' : '') + h.toString()}:${(m < 10 ? '0' : '') + m.toString()}";
+}
+
+
 extension HypotenuseX on num {
   double get hypotenuse => sqrt(this*this + this*this);
 }
