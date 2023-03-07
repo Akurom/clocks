@@ -19,8 +19,8 @@ class _ClockPageState extends State<ClockPage> with TickerProviderStateMixin {
   @override
   void initState() {
     _isMenuOpen = false;
-    _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 500));
-    _animation = CurvedAnimation(parent: _controller, curve: Curves.bounceOut);
+    _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 300));
+    _animation = CurvedAnimation(parent: _controller, curve: Curves.linear);
 
     super.initState();
   }
@@ -63,6 +63,7 @@ class _ClockPageState extends State<ClockPage> with TickerProviderStateMixin {
                     child: Menu(callback: _toggle), // todo pass callback to reverse animation on click
                   ),
                 ),
+                // clock
                 Transform.translate(
                   offset: Offset(maxSlide * _controller.value, 0),
                   child: Transform(
@@ -76,19 +77,41 @@ class _ClockPageState extends State<ClockPage> with TickerProviderStateMixin {
                       color: Colors.white,
                       child: Column(
                         children: [
+
                           Align(
                             alignment: Alignment.topLeft,
                             child: InkWell(
-                              child: Icon(
-                                Icons.menu,
-                                size: 42,
-                              ),
+                              child: Icon(Icons.menu, size: 42,),
                               onTap: () {
                                 _toggle();
                               },
                             ),
                           ),
+                          Text("PROJECT TITLE", style: Theme.of(context).textTheme.displaySmall,),
+                          Text("Task name", style: Theme.of(context).textTheme.bodyLarge,),
+                          Padding(padding: EdgeInsets.only(bottom: screenHeight(context) * 1/20)),
                           const Clock(),
+                          Padding(padding: EdgeInsets.only(bottom: screenHeight(context) * 1/20)),
+                          Icon(Icons.play_arrow_sharp, size: 69,),
+                          Padding(padding: EdgeInsets.only(bottom: screenHeight(context) * 1/20)),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Column(
+                                children: [
+                                  Text("TOTAL", style: Theme.of(context).textTheme.displaySmall,),
+                                  Text("07:45", style: Theme.of(context).textTheme.displayMedium,),
+                                ],
+                              ),
+
+                              Column(
+                                children: [
+                                  Text("TODAY", style: Theme.of(context).textTheme.displaySmall,),
+                                  Text("00:21", style: Theme.of(context).textTheme.displayMedium,),
+                                  ],
+                              ),
+                            ],
+                          ),
                         ],
                       ),
                     ),
